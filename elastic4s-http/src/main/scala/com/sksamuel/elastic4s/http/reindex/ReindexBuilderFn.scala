@@ -16,6 +16,9 @@ object ReindexBuilderFn {
       builder.rawField("script", ScriptBuilderFn(script))
     }
 
+    if (request.shouldProceedConflicts.getOrElse(false))
+      builder.field("conflicts", "proceed")
+
     builder.startObject("source")
 
     request.remoteHost.foreach { host =>
@@ -31,12 +34,15 @@ object ReindexBuilderFn {
     if (request.targetType.nonEmpty)
       builder.field("type", request.targetType.get)
 
+    request.batchSize.foreach(builder.field("size", _))
+
     request.filter.foreach(q => builder.rawField("query", QueryBuilderFn(q)))
     // end source
     builder.endObject()
 
     builder.startObject("dest")
     builder.field("index", request.targetIndex.name)
+    request.shouldUseExternalVersion.foreach(_ => builder.field("version_type", "external"))
     // end dest
     builder.endObject()
   }

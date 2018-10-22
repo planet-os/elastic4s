@@ -24,7 +24,11 @@ case class ReindexRequest(sourceIndexes: Indexes,
                           remotePass: Option[String] = None,
                           // It’s also possible to limit the number of processed documents by setting size.
                           size: Option[Int] = None,
-                          script: Option[Script] = None) {
+                          script: Option[Script] = None,
+                          shouldUseExternalVersion: Option[Boolean] = None,
+                          shouldAutoSlice: Option[Boolean] = None,
+                          batchSize: Option[Int] = None,
+                          shouldProceedConflicts: Option[Boolean] = None) {
 
   def remote(uri: String): ReindexRequest = copy(remoteHost = Option(uri))
   def remote(uri: String, user: String, pass: String): ReindexRequest =

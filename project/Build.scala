@@ -33,11 +33,12 @@ object Build extends AutoPlugin {
 
   override def projectSettings = Seq(
     organization := org,
-    scalaVersion := "2.12.6",
-    crossScalaVersions := Seq("2.11.12", "2.12.6"),
+    scalaVersion := "2.11.11",
+    crossScalaVersions := Seq("2.11.11", "2.12.6"),
     publishMavenStyle := true,
     resolvers += Resolver.mavenLocal,
     resolvers += Resolver.url("https://artifacts.elastic.co/maven"),
+    resolvers += "Sonatype" at "http://oss.sonatype.org/service/local/staging/deploy/maven2",
     javaOptions ++= Seq("-Xms512M", "-Xmx2048M", "-XX:MaxPermSize=2048M", "-XX:+CMSClassUnloadingEnabled"),
     publishArtifact in Test := false,
     fork in Test:= false,
@@ -56,11 +57,11 @@ object Build extends AutoPlugin {
       "org.scalatest"     %% "scalatest"  % ScalatestVersion % "test"
     ),
     publishTo := {
-      val nexus = "https://oss.sonatype.org/"
+      val nexus: String = "http://repo.devops.planetos.com/archiva/repository/"
       if (version.value.trim.endsWith("SNAPSHOT"))
-        Some("snapshots" at nexus + "content/repositories/snapshots")
+        Some("Snapshots" at nexus + "snapshots")
       else
-        Some("releases" at nexus + "service/local/staging/deploy/maven2")
+        Some("Releases" at nexus + "releases")
     },
     pomExtra :=
       <url>https://github.com/sksamuel/elastic4s</url>

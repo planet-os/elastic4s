@@ -58,6 +58,8 @@ trait ReindexHandlers {
         params.put("wait_for_active_shards", request.waitForActiveShards.getOrElse(0).toString)
       if (request.requestsPerSecond.getOrElse(-1F) > 0)
         params.put("requests_per_second", request.requestsPerSecond.getOrElse(0).toString)
+      if (request.shouldAutoSlice.getOrElse(false))
+        params.put("slice", "auto")
 
       val body = ReindexBuilderFn(request).string()
 
