@@ -64,7 +64,7 @@ class ElasticsearchJavaRestClient(client: RestClient) extends HttpClient {
 
     val jparams = req.params.asJava
 
-    val httpAsyncResponseConsumerFactory = new HttpAsyncResponseConsumerFactory.HeapBufferedResponseConsumerFactory(110 * 1024 * 1024)
+    val httpAsyncResponseConsumerFactory = new HttpAsyncResponseConsumerFactory.HeapBufferedResponseConsumerFactory(200 * 1024 * 1024)
 
     req.entity match {
       case Some(entity) => client.performRequestAsync(req.method, req.endpoint, jparams, apacheEntity(entity), httpAsyncResponseConsumerFactory, l)
