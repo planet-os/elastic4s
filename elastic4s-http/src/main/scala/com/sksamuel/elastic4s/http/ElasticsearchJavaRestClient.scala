@@ -8,7 +8,7 @@ import com.sksamuel.elastic4s.Show
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.entity.{AbstractHttpEntity, ContentType, FileEntity, InputStreamEntity, StringEntity}
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder
-import org.elasticsearch.client.{ResponseException, ResponseListener, RestClient}
+import org.elasticsearch.client.{HttpAsyncResponseConsumerFactory, ResponseException, ResponseListener, RestClient}
 import org.elasticsearch.client.RestClientBuilder.{HttpClientConfigCallback, RequestConfigCallback}
 
 import scala.collection.JavaConverters._
@@ -64,9 +64,11 @@ class ElasticsearchJavaRestClient(client: RestClient) extends HttpClient {
 
     val jparams = req.params.asJava
 
+    val httpAsyncResponseConsumerFactory = new HttpAsyncResponseConsumerFactory.HeapBufferedResponseConsumerFactory(110 * 1024 * 1024)
+
     req.entity match {
-      case Some(entity) => client.performRequestAsync(req.method, req.endpoint, jparams, apacheEntity(entity), l)
-      case None         => client.performRequestAsync(req.method, req.endpoint, jparams, l)
+      case Some(entity) => client.performRequestAsync(req.method, req.endpoint, jparams, apacheEntity(entity), httpAsyncResponseConsumerFactory, l)
+      case None         => client.performRequestAsync(req.method, req.endpoint, jparams, null, httpAsyncResponseConsumerFactory, l)
     }
   }
 
